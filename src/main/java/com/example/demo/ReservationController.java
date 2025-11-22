@@ -49,7 +49,7 @@ public class ReservationController {
                     .status(HttpStatus.OK) // 200
                     .body(reservationService.getReservationById(id));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
         }
     }
 
@@ -92,4 +92,12 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<Reservation> approveReservation(@PathVariable("id") Long id) {
+        log.info("Called approveReservation: id={}", id);
+        var reservation = reservationService.approveReservation(id);
+        return ResponseEntity.ok(reservation);
+    }
+
 }
