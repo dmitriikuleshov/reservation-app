@@ -44,13 +44,9 @@ public class ReservationController {
     @GetMapping("/{id}")
     public ResponseEntity<Reservation> getReservationById(@PathVariable("id") Long id) {
         log.info("Called getReservationById: id={}", id);
-        try {
-            return ResponseEntity
+        return ResponseEntity
                     .status(HttpStatus.OK) // 200
                     .body(reservationService.getReservationById(id));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
-        }
     }
 
     @GetMapping
@@ -85,12 +81,8 @@ public class ReservationController {
             @PathVariable("id") Long id
     ) {
         log.info("Called deleteReservation: id={}", id);
-        try {
             reservationService.cancelReservation(id);
             return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
 
     @PostMapping("/{id}/approve")
@@ -99,5 +91,4 @@ public class ReservationController {
         var reservation = reservationService.approveReservation(id);
         return ResponseEntity.ok(reservation);
     }
-
 }
