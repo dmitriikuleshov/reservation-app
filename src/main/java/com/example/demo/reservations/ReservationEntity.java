@@ -1,21 +1,24 @@
-package com.example.demo;
+package com.example.demo.reservations;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-@Table(name="reservations")
+@Table(name = "reservations")
 @Entity
 public class ReservationEntity {
+
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
     @Column(name = "room_id", nullable = false)
     private Long roomId;
+
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
     @Column(name = "end_date", nullable = false)
@@ -25,11 +28,17 @@ public class ReservationEntity {
     @Column(name = "status", nullable = false)
     private ReservationStatus status;
 
-    // for Hibernate
     public ReservationEntity() {
     }
 
-    public ReservationEntity(Long id, Long userId, Long roomId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
+    public ReservationEntity(
+            Long id,
+            Long userId,
+            Long roomId,
+            LocalDate startDate,
+            LocalDate endDate,
+            ReservationStatus status
+    ) {
         this.id = id;
         this.userId = userId;
         this.roomId = roomId;
@@ -38,13 +47,12 @@ public class ReservationEntity {
         this.status = status;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getUserId() {

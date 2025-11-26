@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.reservations;
 
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/reservation")
@@ -22,38 +21,32 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-//    @GetMapping("/{id}")
-//    public Reservation getReservationById(@PathVariable("id") Long id) {
-//        log.info("Called getReservationById: id={}", id);
-//        return reservationService.getReservationById(id);
-//    }
-
-//    @GetMapping()
-//    public List<Reservation> getAllReservations() {
-//        log.info("Called getAllReservations");
-//        return reservationService.findAllReservations();
-//    }
-
-//    @PostMapping
-//    public Reservation createReservation(
-//        @RequestBody Reservation reservationToCreate
-//    ) {
-//        log.info("Called createReservation");
-//        return reservationService.createReservation(reservationToCreate);
-//    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable("id") Long id) {
+    public ResponseEntity<Reservation> getReservationById(
+            @PathVariable("id") Long id
+    ) {
         log.info("Called getReservationById: id={}", id);
-        return ResponseEntity
-                    .status(HttpStatus.OK) // 200
-                    .body(reservationService.getReservationById(id));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(reservationService.getReservationById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations() {
+    public ResponseEntity<List<Reservation>> getAllReservations(
+            @RequestParam(name = "roomId", required = false) Long roomId,
+            @RequestParam(name = "userId", required = false) Long userId,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize,
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber
+    ) {
         log.info("Called getAllReservations");
-        return ResponseEntity.ok(reservationService.findAllReservations());
+        var filter = new ReservationSearchFilter(
+                roomId,
+                userId,
+                pageSize,
+                pageNumber
+        );
+        return ResponseEntity.ok(reservationService.searchAllByFilter(
+                filter
+        ));
     }
 
     @PostMapping
@@ -61,9 +54,7 @@ public class ReservationController {
             @RequestBody @Valid Reservation reservationToCreate
     ) {
         log.info("Called createReservation");
-        return ResponseEntity
-                .status(HttpStatus.CREATED) // 201
-                .header("test-header", "123")
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(reservationService.createReservation(reservationToCreate));
     }
 
@@ -72,22 +63,26 @@ public class ReservationController {
             @PathVariable("id") Long id,
             @RequestBody @Valid Reservation reservationToUpdate
     ) {
-        log.info("Called method updateReservation id={}, reservationToUpdate={}", id, reservationToUpdate);
+        log.info("Called updateReservation id={}, reservationToUpdate={}",
+                id, reservationToUpdate);
         var updated = reservationService.updateReservation(id, reservationToUpdate);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}/cancel")
-    public ResponseEntity<Void> cancelReservation(
+    public ResponseEntity<Void> deleteReservation(
             @PathVariable("id") Long id
     ) {
         log.info("Called deleteReservation: id={}", id);
-            reservationService.cancelReservation(id);
-            return ResponseEntity.ok().build();
+        reservationService.cancelReservation(id);
+        return ResponseEntity.ok()
+                .build();
     }
 
     @PostMapping("/{id}/approve")
-    public ResponseEntity<Reservation> approveReservation(@PathVariable("id") Long id) {
+    public ResponseEntity<Reservation> approveReservation(
+            @PathVariable("id") Long id
+    ) {
         log.info("Called approveReservation: id={}", id);
         var reservation = reservationService.approveReservation(id);
         return ResponseEntity.ok(reservation);

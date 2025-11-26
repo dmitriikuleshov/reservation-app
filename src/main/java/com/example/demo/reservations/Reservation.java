@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.reservations;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -6,8 +6,7 @@ import jakarta.validation.constraints.Null;
 
 import java.time.LocalDate;
 
-public record Reservation(
-
+public record Reservation (
         @Null
         Long id,
         @NotNull
@@ -17,10 +16,9 @@ public record Reservation(
         @FutureOrPresent
         @NotNull
         LocalDate startDate,
-        @NotNull
         @FutureOrPresent
+        @NotNull
         LocalDate endDate,
-
         ReservationStatus status
 ) {
 }

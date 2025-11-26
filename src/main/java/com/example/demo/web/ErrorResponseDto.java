@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.web;
 
 import java.time.LocalDateTime;
 
@@ -7,5 +7,4 @@ public record ErrorResponseDto(
         String detailedMessage,
         LocalDateTime errorTime
 ) {
-
 }
